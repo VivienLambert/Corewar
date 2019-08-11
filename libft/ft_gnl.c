@@ -6,7 +6,7 @@
 /*   By: vlambert <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/12 12:17:20 by vlambert          #+#    #+#             */
-/*   Updated: 2019/06/05 09:50:18 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/07/19 12:46:58 by ayguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int		ft_gnl(const int fd, char **line)
 	{
 		if (*line[0] == '\n')
 		{
-			*line = NULL;
+			*line[0] = '\0';
 			return (1);
 		}
 		return (ft_strlen(*line));

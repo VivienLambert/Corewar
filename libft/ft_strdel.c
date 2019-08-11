@@ -6,7 +6,7 @@
 /*   By: vlambert <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/08 13:06:30 by vlambert          #+#    #+#             */
-/*   Updated: 2018/11/29 14:19:03 by vlambert         ###   ########.fr       */
+/*   Updated: 2019/08/07 16:38:23 by ayguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_strdel(char **as)
 {
-	if (!as)
+	if (!as || !(*as))
 		return ;
 	free(*as);
 	*as = NULL;

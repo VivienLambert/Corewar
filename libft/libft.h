@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlambert <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/07 09:55:27 by vlambert          #+#    #+#             */
-/*   Updated: 2019/06/19 14:06:03 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/07/09 10:19:53 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char			*ft_strncat(char *s1, const char *s2, size_t n);
 size_t			ft_strlcat(char *dst, const char *src, size_t size);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strrchr(const char *s, int c);
+int				ft_strchrn(const char *s, int c);
 char			*ft_strstr(const char *haystack, const char *needle);
 char			*ft_strnstr(const char *haystack, const char *needle,
 				size_t len);
@@ -52,7 +53,10 @@ int				ft_isalnum(int c);
 int				ft_isascii(int c);
 int				ft_isprint(int c);
 int				ft_toupper(int c);
+int				ft_isupper(int c);
+char			*ft_strtoupper(char *str);
 int				ft_tolower(int c);
+int				ft_ccat(char *dst, char app);
 void			*ft_memalloc(size_t size);
 void			ft_memdel(void **ap);
 char			*ft_strnew(size_t size);
@@ -68,6 +72,7 @@ char			*ft_strsub(char const *s, unsigned int start, size_t len);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strjoinfree(char *s1, char *s2);
 char			*ft_strtrim(char const *s);
+void			ft_strreplace(char *src, char to_find, char replace_by);
 char			**ft_strsplit(char const *s, char c);
 char			**ft_splitandspaces(char const *s, char c);
 char			**ft_splitwhitespaces(char const *s);
@@ -90,11 +95,16 @@ int				ft_gnl(const int fd, char **line);
 void			*ft_realloc(void *ptr, int size, int newsize);
 char			*ft_strcdup(const char *s1, char c, int *i);
 int				ft_printf(const char *format, ...);
+int				ft_dprintf(int fd, const char *format, ...);
 size_t			ft_strclen(const char *s, const char c);
 char			*ft_read_all(int fd);
 int				ft_raws_nbr(char **tab);
 void			ft_free_tab2d(char ***tab);
 void			ft_strcpyfast(char *cpy, const char *s1, size_t i);
-unsigned int	ft_reversebyte(unsigned int byte);
+unsigned int	ft_reversebyte(unsigned int byte, size_t size);
+char			*ft_strrev(char *str);
+int				ft_isspace(int c);
+char			*ft_strcasestr(const char *src, const char *find);
+int				ft_strcasenequ(char const *s1, char const *s2, size_t n);
 
 #endif

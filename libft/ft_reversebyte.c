@@ -6,16 +6,18 @@
 /*   By: ayguillo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 14:04:27 by ayguillo          #+#    #+#             */
-/*   Updated: 2019/06/19 14:06:06 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/06/24 17:19:24 by ayguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-unsigned int	ft_reversebyte(unsigned int byte)
+#include <stdlib.h>
+
+unsigned int	ft_reversebyte(unsigned int byte, size_t size)
 {
 	unsigned int	revbyte;
 	int				i;
 
-	i = 3;
+	i = size - 1;
 	while (i >= 0)
 	{
 		((char*)(&revbyte))[i] = ((char*)(&byte))[0];

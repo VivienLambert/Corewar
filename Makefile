@@ -1,50 +1,68 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ayguillo <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/05/24 17:56:27 by ayguillo          #+#    #+#              #
-#    Updated: 2019/06/18 16:50:26 by ayguillo         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+CC				=	/usr/bin/gcc
 
-NAMEASM = asm
-CFLAGS = -Wall -Wextra -Werror
-SRCSASM = asmsrc/main.c asmsrc/print.c asmsrc/header.c asmsrc/free.c \
-	   asmsrc/label.c asmsrc/instruction.c asmsrc/tools.c
+CFLAGS			=	-Wall -Wextra -Werror
 
-LIB = libft/libft.a
+MAKE			=	/usr/bin/make
 
-YELLOW = \033[0;33m
-RED = \033[0;31m
-GREEN = \033[0;32m
-WHITE = \x1b[0m
+RM				=	/bin/rm
 
-OBJSASM = $(SRCSASM:.c=.o)
+DBG				=
 
-all : $(NAMEASM)
+LN				=	ln -s
 
-$(NAMEASM) : $(OBJSASM)
-	@ make -C libft
-	@ echo "$(YELLOW)Compilation de $(NAMEASM) . . . $(WHITE)"
-	@ gcc $(CFLAGS) -o $(NAMEASM) $(OBJSASM) $(LIB)
-	@ echo "$(GREEN)$(NAMEASM) compilé$(WHITE)"
+NAME_ASM		=	asm
 
-$.o : %.c
-	@ gcc $(CFLAGS) -c $<
+ASM_DIR			=	asmsrc
 
-clean :
-	@ make clean -C libft
-	@ rm $(OBJSASM)
-	@ echo "$(RED)Suppression des .o$(WHITE)"
+NAME_VM			=	corewar
 
-fclean : clean
-	@ rm -rf $(LIB)
-	@ rm -rf $(NAMEASM)
-	@ echo "$(RED) Suppression de $(NAMEASM)$(WHITE)"
+VM_DIR			=	vm
 
-re : fclean all
+NAME_VISU		=	visu
 
-.PHONY : clean fclean re all
+SRC_VISU		=	visu_go/main.go visu_go/display.go visu_go/keys.go\
+					visu_go/read.go
+
+LIB_DIR			=	libft
+
+############################## RULES ###########################################
+
+all				: $(NAME_VISU)
+	@ $(MAKE) $(DBG) $(CFLAGS) -C $(LIB_DIR)
+	@ $(MAKE) $(DBG) $(CFLAGS) -C $(ASM_DIR)
+	@ $(MAKE) $(DBG) $(CFLAGS) -C $(VM_DIR)
+
+$(NAME_ASM)		:
+	@ $(MAKE) $(CFLAGS) -C $(ASM_DIR)
+
+$(NAME_VM)		:
+	@ $(MAKE) $(CFLAGS) -C $(VM_DIR)
+
+$(NAME_VISU)	: $(SRC_VISU)
+	go build -o $(NAME_VISU) ./visu_go
+
+clean			:
+	@ $(MAKE) clean -C $(LIB_DIR)
+	@ $(MAKE) clean -C $(ASM_DIR)
+	@ $(MAKE) clean -C $(VM_DIR)
+	@ rm -f ./visu
+
+fclean			:	clean
+	@ $(MAKE) fclean -C $(LIB_DIR)
+	@ $(MAKE) fclean -C $(ASM_DIR)
+	@ $(MAKE) fclean -C $(VM_DIR)
+	@ rm -f ./visu
+
+re				:	fclean
+	@ $(MAKE) all
+
+############################## DISPLAY #########################################
+
+YELLOW			=	\033[0;33m
+RED				=	\033[0;31m
+GREEN			=	\033[0;32m
+WHITE			=	\x1b[0m
+
+############################## OTHER ###########################################
+
+.PHONY			:	clean fclean re all $(NAME_VM) $(NAME_ASM)

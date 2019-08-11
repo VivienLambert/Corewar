@@ -3,71 +3,155 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlambert <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/12/14 10:40:18 by vlambert          #+#    #+#             */
-/*   Updated: 2019/01/30 10:46:23 by vlambert         ###   ########.fr       */
+/*   Created: 2018/05/29 15:28:14 by bopopovi          #+#    #+#             */
+/*   Updated: 2019/07/03 17:21:31 by bopopovi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-# include <wchar.h>
+# include "./libft.h"
 # include <stdarg.h>
-# include <inttypes.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdbool.h>
+# include <limits.h>
+# include <locale.h>
 
-typedef	struct	s_options
+# define FT_PRINTF_BUFF_SIZE 128
+# define MAX_INT_LEN 21
+# define MAX_DBL_PRECISION 200
+# define MAX_DBL_LEN 500
+# define FT_PRINTF_EOC "\e[39m"
+# define FT_PRINTF_BLK "\e[30m"
+# define FT_PRINTF_RED "\e[31m"
+# define FT_PRINTF_GRN "\e[32m"
+# define FT_PRINTF_YLW "\e[33m"
+# define FT_PRINTF_BLU "\e[34m"
+# define FT_PRINTF_MAG "\e[35m"
+# define FT_PRINTF_CYA "\e[36m"
+# define BASE_DENARY "0123456789"
+# define BASE_BINARY "01"
+# define BASE_OCTAL "01234567"
+# define BASE_HEXA "0123456789abcdef"
+# define BASE_HEXA_UP "0123456789ABCDEF"
+
+typedef long double		t_ldbl;
+typedef unsigned int	t_uint;
+
+typedef struct		s_fmt
 {
-	char		less;
-	char		plus;
-	char		space;
-	char		hashtag;
-	char		zero;
-	char		unsign;
-	int			width;
-	int			precision;
-	char		length;
-	intmax_t	number;
-	long double	doubl;
-}				t_options;
+	const char		*format;
+	uint64_t		i;
+}					t_fmt;
 
-typedef	struct	s_count
+typedef struct		s_buff
 {
-	int		len;
-	int		i;
-	int		written;
-	int		width1;
-	int		width2;
-	int		temp;
-}				t_count;
+	char			buff[FT_PRINTF_BUFF_SIZE + 1];
+	size_t			pos;
+	uint64_t		read;
+}					t_buff;
 
-char			*ft_newfull(unsigned int len, t_options options);
-char			*ft_ltoa_base(t_options options, char base, char maj);
-char			*ft_width(char *buf, t_options options, int isnumber);
-char			*ft_nbrprec(char *buf, t_options options);
-void			ft_strprec(char *buf, t_options options);
-char			*ft_floatprec(char *buf, t_options options, long double c);
-char			*ft_plusspace(char *buf, t_options options);
-char			*ft_strjoinfree(char *s1, char *s2);
-char			*ft_hashtag(char *buf, t_options options,
-				char base, char maj);
-char			*ft_putunicode(wint_t num);
-int				ft_putfloat(long double c, t_options options, int maj);
-void			ft_getwidth(char *str, t_count *a, va_list ap,
-				t_options *options);
-void			ft_getargs(char *str, t_count *a, va_list ap,
-				t_options *options);
-int				ft_isintfunction(char c, va_list ap, t_options *options);
-int				ft_ischarfunction(char c, va_list ap, t_options options);
-int				ft_isfloatfunction(char c, va_list ap, t_options options);
-int				ft_ispointfunction(char c, va_list ap, t_options options);
-int				ft_iswcharfunction(char c, va_list ap, t_options options);
-int				ft_iswstringfunction(char c, va_list ap, t_options options);
-int				ft_isnfunction(char c, va_list ap, t_count a);
-int				ft_iscolorfunction(char c, va_list ap);
-int				ft_strputfree(char *buf, char c, int ch, t_options options);
-void			ft_percent(char *str, t_count *a, va_list ap,
-				t_options *options);
+typedef struct		s_ptf
+{
+	struct s_buff	buff;
+	struct s_fmt	fmt;
+	int				fd;
+	int				width;
+	int				precision;
+	char			spec;
+	char			flags[11];
+	char			*base;
+}					t_ptf;
+
+typedef union		u_udbl
+{
+	double			val;
+	struct
+	{
+		size_t		mant: 52;
+		t_uint		expn: 11;
+		t_uint		sign: 1;
+	}				bits;
+}					t_udbl;
+
+typedef union		u_uldbl
+{
+	long double		val;
+	struct
+	{
+		size_t		mant: 52;
+		t_uint		expn: 11;
+		t_uint		sign: 1;
+	}				bits;
+}					t_uldbl;
+
+/*
+** FT_PRINTF
+*/
+
+int					ft_printf(const char *restrict format, ...);
+int					ft_dprintf(int fd, const char *restrict format, ...);
+int					ft_vdprintf(int fd, const char *restrict fmt, va_list ap);
+
+/*
+** FT_PRINTF_TYPE
+*/
+
+int					ft_printf_type_int(t_ptf *ptf, int64_t param);
+int					ft_printf_type_str(t_ptf *ptf, wchar_t *param);
+int					ft_printf_type_char(t_ptf *ptf, wchar_t param);
+int					ft_printf_type_dbl(t_ptf *ptf, double param);
+int					ft_printf_type_ldbl(t_ptf *ptf, t_ldbl param);
+int					ft_printf_type_n(t_ptf *ptf, int *n);
+int					ft_printf_type_mod(t_ptf *ptf);
+
+/*
+** FT_PRINTF_GET_FLAGS
+*/
+
+uint64_t			ft_printf_get_flags(t_ptf *ptf, va_list ap, uint64_t i);
+
+/*
+** FT_PRINTF_PRINT_ARG
+*/
+
+void				ft_printf_print(t_ptf *ptf, char *prfx, char *inp, int n);
+void				ft_printf_print_wcs(t_ptf *ptf, wchar_t *input, int n);
+
+/*
+** FT_PRINTF_BUFFER
+*/
+
+void				ft_printf_buff_cat(t_ptf *ptf, char *inp, uint64_t siz);
+void				ft_printf_buff_catn(t_ptf *ptf, char *inp, uint64_t n);
+void				ft_printf_buff_cat_npr(t_ptf *ptf, char *inp, uint64_t siz);
+void				ft_printf_dump_fmt(t_ptf *ptf);
+
+/*
+** FT_PRINTF_TOOLS
+*/
+
+int					ft_printf_is_flag(int c);
+int					ft_printf_is_spec(int c);
+size_t				ft_printf_atoi(const char *str, int *res);
+int					ft_printf_lltoa_base(char *buff, char *chrst, int64_t nb);
+int					ft_printf_ulltoa_base(char *buff, char *chrst, uint64_t nb);
+int					ft_printf_dtoa(double val, int prec, char *buff, char spe);
+int					ft_printf_ldtoa(t_ldbl val, int prec, char *buff, char spe);
+
+/*
+** MISC
+*/
+
+int					ft_printf_color(t_ptf *ptf);
+int					ft_wctomb(unsigned char *s, wchar_t wc);
+size_t				ft_wcslen(wchar_t *wcs);
+size_t				ft_wcsnlen(wchar_t *wcs, size_t n);
 
 #endif

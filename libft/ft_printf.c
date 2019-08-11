@@ -3,57 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dygouin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/01/14 13:19:24 by dygouin           #+#    #+#             */
-/*   Updated: 2019/01/30 10:46:44 by vlambert         ###   ########.fr       */
+/*   Created: 2018/05/29 15:26:54 by bopopovi          #+#    #+#             */
+/*   Updated: 2018/09/06 17:51:25 by bopopovi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "libft.h"
 #include "ft_printf.h"
 
-void	ft_percentsplit(char *str, t_count a)
-{
-	while (a.i < a.len)
-	{
-		if (str[a.i] == '%')
-			str[a.i] = 0;
-		a.i += 1;
-	}
-}
+/*
+** Printf version including 'aAcCdDeEfFgGinoOpsSuUxX' standard conversions
+** Non standard conversions are :
+** 'bB' for binary and 'r' for non-printable strings (octal form)
+** Flags implemented :
+** '-+# .hjlz*'
+** Include a color format handling (refer to ft_printf.h for details)
+** This printf version uses no malloc
+*/
 
-void	ft_processstr(char *str, t_count *a, va_list ap, t_options *options)
-{
-	if (str[a->i])
-	{
-		ft_putstr(str + a->i);
-		a->temp = ft_strlen(str + a->i);
-		a->written += a->temp;
-		a->i += a->temp;
-	}
-	if (a->i < a->len && !str[a->i])
-		ft_percent(str, a, ap, options);
-}
-
-int		ft_printf(const char *format, ...)
+int			ft_printf(const char *restrict format, ...)
 {
 	va_list		ap;
-	char		*str;
-	t_count		a;
-	t_options	options;
+	int			ret;
 
-	if (!format || !(str = ft_strdup(format)))
-		return (-1);
-	a.len = ft_strlen(format);
-	a.i = 0;
-	a.written = 0;
-	ft_percentsplit(str, a);
 	va_start(ap, format);
-	while (a.i < a.len)
-		ft_processstr(str, &a, ap, &options);
-	free(str);
+	ret = ft_vdprintf(1, format, ap);
 	va_end(ap);
-	return (a.written);
+	return (ret);
+}
+
+int			ft_dprintf(int fd, const char *restrict format, ...)
+{
+	va_list		ap;
+	int			ret;
+
+	if (fd < 0)
+		return (-1);
+	va_start(ap, format);
+	ret = ft_vdprintf(fd, format, ap);
+	va_end(ap);
+	return (ret);
 }
