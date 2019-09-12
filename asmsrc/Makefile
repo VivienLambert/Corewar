@@ -4,6 +4,8 @@ CFLAGS			=	-Wall -Wextra -Werror -g
 
 MAKE			=	/usr/bin/make
 
+DEBUG			=
+
 RM				=	/bin/rm
 
 MKDIR			=	/bin/mkdir -p
@@ -39,6 +41,10 @@ LDFLAGS			=	-L $(LIB_DIR)
 
 INC				=	../includes
 
+LIB_HEADERS		=	$(addprefix $(LIB_DIR)/, libft.h color.h)
+
+HEADERS			=	$(LIB_HEADERS) $(addprefix ../includes/, asm.h op.h)
+
 CPPFLAGS		=	$(addprefix -I, $(INC))
 
 ############################## RULES ###########################################
@@ -47,12 +53,12 @@ all				:	$(TARGET)
 
 $(TARGET)		:	$(OBJ)
 	@ $(MAKE) -C $(LIB_DIR) 2> /dev/null 1> /dev/null
-	@ $(CC) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $^ -o $@
+	@ $(CC) $(CFLAGS) $(DEBUG) $(LDFLAGS) $(LDLIBS) $^ -o $@
 	@ echo "$(GREEN)$(NAME) compilé$(WHITE)"
 
-$(OBJ_DIR)/%.o	:	$(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o	:	$(SRC_DIR)/%.c $(HEADERS)
 	@ $(MKODIR)
-	@ $(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+	@ $(CC) $(DEBUG) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 clean			:
 	@ echo "$(RED)Suppression des .o$(WHITE)"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_ldtoa.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/13 19:10:37 by bopopovi          #+#    #+#             */
-/*   Updated: 2019/06/03 18:54:33 by bopopovi         ###   ########.fr       */
+/*   Updated: 2019/08/29 15:05:25 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ static void		round_dbl(char *buff)
 					buff[i] = '1';
 				else
 					buff[i]++;
-				break;
+				break ;
 			}
 			else if (buff[i] == '.')
-				break;
+				break ;
 			i--;
 		}
 	}

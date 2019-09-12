@@ -3,29 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   op_and.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/27 19:24:02 by bopopovi          #+#    #+#             */
-/*   Updated: 2019/07/20 17:27:34 by bopopovi         ###   ########.fr       */
+/*   Updated: 2019/09/10 13:13:59 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "proc.h"
 
-__attribute__((unused))static bool l_dbg = 1;
-
-void	op_and(__attribute__((unused))t_vm *vm, t_proc *process,
+void	op_and(t_vm *vm, t_proc *process,
 	t_param *params, t_op op)
 {
 	unsigned int op_result;
-	unsigned int src_1;
-	unsigned int src_2;
+	unsigned int src[2];
 
-	dbg_print_instruction_head(l_dbg, "OP_AND");
-	src_1 = read_parameter(vm, process, op, &params[0]);
-	src_2 = read_parameter(vm, process, op, &params[1]);
-	op_result = (src_1 & src_2);
-	dbg_print_math(l_dbg, '&', src_1, src_2, op_result);
-	write_to_register(process, params[2].val, op_result);
-	process_set_carry(process, op, op_result);
+	ft_bzero(src, sizeof(int) * 2);
+	dbg_print_instruction_head(vm->options & OPTD, "OP_AND");
+	src[0] = read_parameter(vm, process, op, &params[0]);
+	src[1] = read_parameter(vm, process, op, &params[1]);
+	op_result = (src[0] & src[1]);
+	dbg_print_math(vm->options & OPTD, '&', src, op_result);
+	if (write_to_register(process, params[2].val, op_result, vm) == 0)
+		process_set_carry(process, op, op_result, vm);
 }

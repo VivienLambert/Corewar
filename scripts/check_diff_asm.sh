@@ -12,13 +12,13 @@ readonly CLR="\e[0;m"
 
 # GLOBAL VARIABLES :
 
-RESOURCES_DIR="resources"
+RESOURCES_DIR="../resources"
 CHAMPS_DIR="$RESOURCES_DIR/champs"
-ASM_NAME="asm"
+ASM_NAME="../asm"
 ASM_EXT="s"
-VM_NAME="corewar"
+VM_NAME="../corewar"
 VM_EXT="cor"
-OUT_DIR="checker_output"
+OUT_DIR="asm_checker_output"
 ASM_LOG_FILE="$OUT_DIR/asm_diff.log"
 HEX_OUT_DIR="$OUT_DIR/hex_out"
 
@@ -60,7 +60,7 @@ if [[ ! -d $OUT_DIR ]]; then
 fi
 
 if [[ ! -e $ASM_NAME ]]; then
-	make
+	make asm -C ..
 fi
 
 if [[ -e $HEX_OUT_DIR ]]; then

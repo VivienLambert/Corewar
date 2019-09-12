@@ -6,7 +6,7 @@
 /*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/26 19:10:48 by bopopovi          #+#    #+#             */
-/*   Updated: 2019/08/02 15:06:48 by bopopovi         ###   ########.fr       */
+/*   Updated: 2019/08/22 20:28:48 by bopopovi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,42 +18,35 @@ int		display_get_color(t_vm *vm, int position)
 {
 	int color;
 
-	color = 0;
 	if (vm->display.color_map[position].highlight > 0)
-	{
-		color = vm->display.color_map[position].highlight;
-	}
-	else if (vm->display.color_map[position].pc > 0)
+		vm->display.color_map[position].highlight -= 1;
+	if (vm->display.color_map[position].pc > 0)
 		color = vm->display.color_map[position].pc;
-	else
+	else if (vm->display.color_map[position].code > 0)
 		color = vm->display.color_map[position].code;
+	else
+		color = 9;
 	return (color);
 }
 
 void	win_print_memory(t_vm *vm)
 {
-	int i;
 	int	color;
 	int pc;
 
-	i = 0;
 	pc = 0;
 	wmove(vm->display.memory.contents, 0, 0);
 	while (pc < MEM_SIZE)
 	{
 		color = display_get_color(vm, pc);
 		wattron(vm->display.memory.contents, COLOR_PAIR(color));
+		if (vm->display.color_map[pc].highlight > 0 && color < 5)
+			wattron(vm->display.memory.contents, A_BOLD);
 		wprintw(vm->display.memory.contents, "%02hhx", vm->mem[pc]);
-		//wprintw(vm->display.memory.contents, "%02hd", color);
 		wattroff(vm->display.memory.contents, COLOR_PAIR(color));
-		i += 2;
+		wattroff(vm->display.memory.contents, A_BOLD);
 		if (pc + 1 < MEM_SIZE)
-		{
-			i++;
 			wprintw(vm->display.memory.contents, " ");
-		}
-		else
-			i = 0;
 		pc++;
 	}
 }

@@ -6,16 +6,30 @@
 /*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/19 12:03:16 by vlambert          #+#    #+#             */
-/*   Updated: 2019/07/10 15:56:52 by vlambert         ###   ########.fr       */
+/*   Updated: 2019/08/29 15:40:57 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include "../libft/libft.h"
+#include "libft.h"
 #include "options.h"
-#include "../libft/color.h"
+#include "color.h"
 #include <fcntl.h>
 #include <unistd.h>
+
+static int	read_part(int fd, int length, char *buff)
+{
+	if (read(fd, buff, length + 4) < length + 4 || buff[length] != 0)
+		return (-1);
+	return (0);
+}
+
+static int	err_champ(char *champ, int fd)
+{
+	ft_dprintf(2, "%s: ", champ);
+	close(fd);
+	return (ERR_CHAMP);
+}
 
 static int	test_size(char *champ, int fd, t_vm *vm)
 {
@@ -25,12 +39,11 @@ static int	test_size(char *champ, int fd, t_vm *vm)
 		ft_putstr_fd(" size is too big (max = ", 2);
 		ft_putnbr_fd(CHAMP_MAX_SIZE, 2);
 		ft_putstr_fd(" yours = ", 2);
-		ft_putnbr_fd(vm->players[vm->players_nbr].size, 2);
+		ft_dprintf(2, "%u", vm->players[vm->players_nbr].size);
 		ft_putstr_fd(")\n", 2);
 		close(fd);
 		return (ERR_SIZE);
 	}
-	close(fd);
 	return (0);
 }
 
@@ -40,26 +53,26 @@ static int	read_all(char *champ, int fd, t_vm *vm)
 	static int		number = 0;
 
 	if ((unsigned long)read(fd, &temp, sizeof(int)) < sizeof(int)
-		|| ft_reversebyte(temp, sizeof(int)) != COREWAR_EXEC_MAGIC
-		|| read(fd, vm->players[vm->players_nbr].name, PROG_NAME_LENGTH + 4)
-			< PROG_NAME_LENGTH + 4
-		|| (unsigned long)read(fd, &temp, sizeof(int))
+			|| ft_reversebyte(temp, sizeof(int)) != COREWAR_EXEC_MAGIC
+			|| read_part(fd, PROG_NAME_LENGTH,
+				vm->players[vm->players_nbr].name)
+			|| (unsigned long)read(fd, &temp, sizeof(int))
 			< sizeof(int)
-		|| !(vm->players[vm->players_nbr].size = ft_reversebyte(temp,
-			sizeof(int)))
-		|| read(fd, vm->players[vm->players_nbr].comment, COMMENT_LENGTH + 4)
-			< COMMENT_LENGTH + 4
-		|| read(fd, vm->players[vm->players_nbr].code,
-			vm->players[vm->players_nbr].size + 1)
+			|| !(vm->players[vm->players_nbr].size = ft_reversebyte(temp,
+					sizeof(int))))
+		return (err_champ(champ, fd));
+	if (test_size(champ, fd, vm))
+		return (ERR_SIZE);
+	if (read_part(fd, COMMENT_LENGTH,
+				vm->players[vm->players_nbr].comment)
+			|| read(fd, vm->players[vm->players_nbr].code,
+				vm->players[vm->players_nbr].size + 1)
 			!= vm->players[vm->players_nbr].size)
-	{
-		ft_putstr_fd(champ, 2);
-		close(fd);
-		return (ERR_CHAMP);
-	}
+		return (err_champ(champ, fd));
 	if (!(vm->players[vm->players_nbr].number))
 		vm->players[vm->players_nbr].number = --number;
-	return (test_size(champ, fd, vm));
+	close(fd);
+	return (0);
 }
 
 int			read_champ(char *champ, t_vm *vm)
@@ -67,9 +80,11 @@ int			read_champ(char *champ, t_vm *vm)
 	int				fd;
 	int				err;
 
+	if (vm->players_nbr >= MAX_PLAYERS)
+		return (ERR_TMCHAMP);
 	if ((fd = open(champ, O_RDONLY)) == -1)
 	{
-		ft_putstr_fd(champ, 2);
+		ft_dprintf(2, "%s: ", champ);
 		return (ERR_OPEN);
 	}
 	err = read_all(champ, fd, vm);

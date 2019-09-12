@@ -6,7 +6,7 @@
 /*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/24 12:59:06 by ayguillo          #+#    #+#             */
-/*   Updated: 2019/08/07 15:11:05 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/09/10 13:01:19 by ayguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,11 @@ int			main(int ac, char **av)
 
 	i = 0;
 	ret = 0;
+	if (ac == 1)
+	{
+		ft_dprintf(2, "Usage : ./asm [files .s]\n");
+		return (0);
+	}
 	while (++i < ac)
 		ret = multifile(av, i);
 	return (ret);

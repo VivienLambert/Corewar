@@ -6,11 +6,25 @@
 /*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/29 19:06:52 by bopopovi          #+#    #+#             */
-/*   Updated: 2019/06/03 18:54:19 by bopopovi         ###   ########.fr       */
+/*   Updated: 2019/09/03 14:21:55 by bopopovi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+/*
+** Facilitate error handling in case of invalid write
+*/
+
+int					write_wrapper(t_ptf *ptf, int fd, char *buff, size_t size)
+{
+	if (write(fd, buff, size) < 0)
+	{
+		ptf->error = 1;
+		return (-1);
+	}
+	return (0);
+}
 
 /*
 ** Check wether provided specifier exists or if it is a '%'
@@ -85,23 +99,23 @@ static int64_t		parse_fmt(t_ptf *ptf, va_list ap)
 	ret = 0;
 	fmt = &(ptf->fmt.format);
 	i = &(ptf->fmt.i);
-	while ((*fmt)[*i])
+	while ((*fmt)[*i] && !ptf->error)
 	{
 		while ((*fmt)[*i] && (*fmt)[*i] != '%' && (*fmt)[*i] != '{')
 			(*i)++;
 		if ((*fmt)[*i] == '%')
 		{
 			if (!(*fmt)[*i + 1])
-				break;
+				break ;
 			else if ((ret = treat_arg(ptf, ap)) < 1)
 				return (ret);
 		}
 		else if ((*fmt)[*i] == '{')
 			*i += (uint64_t)ft_printf_color(ptf);
 	}
-	if (**fmt)
+	if (!ptf->error && **fmt)
 		ft_printf_buff_cat(ptf, (char*)*fmt, *i);
-	return ((int64_t)ptf->buff.read);
+	return (ptf->error ? -1 : (int64_t)ptf->buff.read);
 }
 
 /*
@@ -120,16 +134,16 @@ int					ft_vdprintf(int fd, const char *restrict fmt, va_list ap)
 	ptf.fmt.format = fmt;
 	ptf.fmt.i = 0;
 	ptf.fd = fd;
+	ptf.error = 0;
 	if ((ret = (int)parse_fmt(&ptf, ap)) < 0)
 	{
-		if (write(fd, ptf.buff.buff, ptf.buff.pos) < 0)
-			exit(-1);
+		write_wrapper(&ptf, fd, ptf.buff.buff, ptf.buff.pos);
 		return (-1);
 	}
 	if (ptf.buff.pos > 0)
 	{
-		if (write(fd, ptf.buff.buff, ptf.buff.pos) < 0)
-			exit(-1);
+		if (write_wrapper(&ptf, fd, ptf.buff.buff, ptf.buff.pos) < 0)
+			return (-1);
 		ptf.buff.read += ptf.buff.pos;
 	}
 	return ((int)ptf.buff.read);

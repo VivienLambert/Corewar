@@ -6,13 +6,13 @@
 /*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/17 11:28:13 by vlambert          #+#    #+#             */
-/*   Updated: 2019/08/09 16:41:32 by vlambert         ###   ########.fr       */
+/*   Updated: 2019/08/29 11:22:28 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "options.h"
 #include "vm.h"
-#include "../libft/libft.h"
+#include "libft.h"
 
 static int	player_exists(int player_nbr, t_vm *vm)
 {
@@ -61,19 +61,13 @@ static int	opt_others(char *av[], t_vm *vm, int i)
 	j = 0;
 	while (av[i][++j])
 	{
-		if (av[i][j] == 'V' &&
-			(!(vm->options) || (vm->options & OPTD &&
-					(vm->options & OPTD) == (vm->options | OPTD))))
+		if (av[i][j] == 'V' && !(vm->options & (OPTV | OPTZ)))
 			vm->options = vm->options | OPTMAJV;
-		else if (av[i][j] == 'v' &&
-			(!(vm->options) || (vm->options & OPTD &&
-					(vm->options & OPTD) == (vm->options | OPTD))))
+		else if (av[i][j] == 'v' && !(vm->options))
 			vm->options = vm->options | OPTV;
-		else if (av[i][j] == 'd')
+		else if (av[i][j] == 'd' && !(vm->options & (OPTV | OPTZ)))
 			vm->options = vm->options | OPTD;
-		else if (av[i][j] == 'z' &&
-			(!(vm->options) || (vm->options & OPTD &&
-					(vm->options & OPTD) == (vm->options | OPTD))))
+		else if (av[i][j] == 'z' && !(vm->options))
 			vm->options = vm->options | OPTZ;
 		else
 			return (ERR_BADARG);

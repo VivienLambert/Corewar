@@ -6,7 +6,7 @@
 /*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 18:45:31 by bopopovi          #+#    #+#             */
-/*   Updated: 2019/07/30 21:59:00 by bopopovi         ###   ########.fr       */
+/*   Updated: 2019/08/23 21:48:41 by bopopovi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,15 @@ void	display_update_color(t_vm *vm, unsigned int start, int size,
 	if (vm->options & OPTZ)
 	{
 		start %= MEM_SIZE;
-		while (i < size)
+		i = start;
+		while (size--)
 		{
-			vm->display.color_map[start + i].code = (player_id + 1);
+			if (vm->cycles > 0)
+				vm->display.color_map[i].highlight = 50;
+			vm->display.color_map[i].code = (player_id + 1);
 			i++;
+			if (i >= MEM_SIZE)
+				i = 0;
 		}
 	}
 }

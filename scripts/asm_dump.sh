@@ -1,7 +1,15 @@
-PROJ_ASM="resources/asm"
+#!/bin/sh
+
+#
+# Hexdump the '.cor' of our asm and provided's asm in separated files for a
+# command line provided '.s' file
+#
+
+PROJ_ASM="../resources/asm"
 PROJ_ASM_LOG="proj_asm.log"
-MY_ASM="asm"
+MY_ASM="../asm"
 MY_ASM_LOG="my_asm.log"
+
 if [[ -e $MY_ASM && -e $PROJ_ASM && -e $1 ]];
 then
 	target="$1"

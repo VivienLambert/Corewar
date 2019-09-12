@@ -6,26 +6,28 @@
 /*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 09:08:54 by vlambert          #+#    #+#             */
-/*   Updated: 2019/08/07 14:56:41 by vlambert         ###   ########.fr       */
+/*   Updated: 2019/09/10 13:10:28 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include "../libft/libft.h"
+#include "libft.h"
 
 static int	process_cycle(t_vm *vm)
 {
 	t_proc				*tmp;
 
 	tmp = vm->proc;
-	display_reset_pc_colors(vm);
+	if (vm->options & OPTZ)
+		display_reset_pc_colors(vm);
 	while (tmp)
 	{
 		if (tmp->waiting == 0 || tmp->waiting == -1)
 			process_execute(vm, tmp);
 		else
 			tmp->waiting -= 1;
-		display_update_pc(vm, tmp->pc, tmp->player);
+		if (vm->options & OPTZ)
+			display_update_pc(vm, tmp->pc, tmp->player);
 		tmp = tmp->next;
 	}
 	return (0);
@@ -49,19 +51,17 @@ static int	new_period(t_vm *vm)
 
 int			game_cycle(t_vm *vm)
 {
-	vm->cycle_to_die = CYCLE_TO_DIE;
-	vm->checks = MAX_CHECKS;
-	vm->last_player_alive = -1;
 	intro_champs(vm);
-	display_info(vm);
 	display_update(vm);
-	while (((vm->cycles += 1) != vm->cycles_limit || vm->cycles_limit == 0)
-			&& vm->proc && vm->cycle_to_die > 0)
+	while (((vm->cycles += 1) != vm->cycles_limit + 1 || vm->cycles_limit == 0)
+			&& vm->proc)
 	{
+		if (vm->display.status.exit)
+			return (0);
 		vm->period_cycles += 1;
 		print_arena_govisu(vm, 0);
 		process_cycle(vm);
-		if (vm->period_cycles == vm->cycle_to_die)
+		if (vm->period_cycles >= vm->cycle_to_die)
 		{
 			if ((vm->checks -= 1) == 0 || vm->period_lives >= NBR_LIVE)
 			{
@@ -73,5 +73,6 @@ int			game_cycle(t_vm *vm)
 		display_update(vm);
 	}
 	print_winner(vm);
+	display_update(vm);
 	return (0);
 }

@@ -164,7 +164,7 @@ func gradientBackground(infos string, w int32, loadingColor *uint32, surface *sd
 						} else if (cycleToDie >= 510 && cycle%(cycleToDie/510) == 0) || cycleToDie < 510 {
 							*loadingColor |= 0x00ff0000
 						}
-						if cycle == 1 {
+						if cycle <= 4 {
 							*loadingColor = 0x0000ff00
 						}
 						surface.FillRect(&loading, *loadingColor)
@@ -191,15 +191,34 @@ func update(chMem, chInfos chan string, fontMem, fontInfos *ttf.Font, tick chan 
 		select {
 		case mem = <-chMem:
 			infos = <-chInfos
-			if len(infos) > 1 {
-				surface.FillRect(nil, 0xff404040)
+			select {
+			case <-tick:
 				gradientBackground(infos, w, loadingColor, surface, loading)
-				printArena(mem, surface, fontMem, window, color, backColor, w, h)
-				printInfos(infos, surface, fontInfos, window, color, w, h)
-				window.UpdateSurface()
+				if strings.Contains(infos, "The winner is") {
+					surface.FillRect(nil, 0xff404040)
+					printArena(mem, surface, fontMem, window, color, backColor, w, h)
+					printInfos(infos, surface, fontInfos, window, color, w, h)
+					window.UpdateSurface()
+				}
+			default:
+				if len(infos) > 1 {
+					surface.FillRect(nil, 0xff404040)
+					gradientBackground(infos, w, loadingColor, surface, loading)
+					if strings.Contains(infos, "The winner is") {
+						surface.FillRect(nil, 0xff404040)
+					}
+					printArena(mem, surface, fontMem, window, color, backColor, w, h)
+					printInfos(infos, surface, fontInfos, window, color, w, h)
+					window.UpdateSurface()
+				}
 			}
 		default:
-			return
+			select {
+			case <-tick:
+				return
+			default:
+				tick <- true
+			}
 		}
 	default:
 		return

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayguillo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/06 13:52:06 by ayguillo          #+#    #+#             */
-/*   Updated: 2019/08/07 14:41:17 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/08/29 13:40:36 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char		*ft_recupfile(char *name)
 	if (!(ext = ft_strdup(".cor")))
 		return (ft_errfree(&rname, NULL));
 	if (!(join = ft_strjoinfree(rname, ext)))
-		return (ft_errfree(&rname, &ext));
+		return (ft_errfree(NULL, NULL));
 	return (join);
 }
 

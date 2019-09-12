@@ -6,7 +6,7 @@ MAKE			=	/usr/bin/make
 
 RM				=	/bin/rm
 
-DBG				=
+DEBUG			=
 
 LN				=	ln -s
 
@@ -28,9 +28,9 @@ LIB_DIR			=	libft
 ############################## RULES ###########################################
 
 all				: $(NAME_VISU)
-	@ $(MAKE) $(DBG) $(CFLAGS) -C $(LIB_DIR)
-	@ $(MAKE) $(DBG) $(CFLAGS) -C $(ASM_DIR)
-	@ $(MAKE) $(DBG) $(CFLAGS) -C $(VM_DIR)
+	@ $(MAKE) $(CFLAGS) -C $(LIB_DIR)
+	@ $(MAKE) $(CFLAGS) -C $(ASM_DIR)
+	@ $(MAKE) $(CFLAGS) -C $(VM_DIR)
 
 $(NAME_ASM)		:
 	@ $(MAKE) $(CFLAGS) -C $(ASM_DIR)

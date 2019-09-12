@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_print_arg.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bopopovi <bopopovi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/26 18:44:17 by bopopovi          #+#    #+#             */
-/*   Updated: 2019/06/03 18:54:50 by bopopovi         ###   ########.fr       */
+/*   Updated: 2019/08/29 15:06:11 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ void			ft_printf_print_wcs(t_ptf *ptf, wchar_t *input, int n)
 		{
 			ft_printf_buff_cat(ptf, (char*)bytes, (uint64_t)len);
 			if (total_b == n)
-				break;
+				break ;
 		}
 		else
-			break;
+			break ;
 		i++;
 	}
 }

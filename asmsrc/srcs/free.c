@@ -6,7 +6,7 @@
 /*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/02 13:32:57 by ayguillo          #+#    #+#             */
-/*   Updated: 2019/08/07 14:30:00 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/08/29 14:28:07 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,14 @@ has %i characters\n%s", PROG_NAME_LENGTH, _RED_, ft_strlen((*tab)[1]), _RESET_);
 has %i characters\n%s", COMMENT_LENGTH, _RED_, ft_strlen((*tab)[1]), _RESET_);
 	if (err == 4)
 		ft_dprintf(2, "Champion too long. End of file at line %i\n",
-				gnl->nbline);
+				gnl ? gnl->nbline : -1);
 	if (err == 5)
 		ft_unexp_comment(tab, str, gnl);
 	if (err == 0)
 		ft_empty(str, tab, gnl);
 	else if (err <= 3 && err > 0)
 		ft_free_all(tab, str);
-	ft_strdel(&(gnl->line));
+	if (gnl)
+		ft_strdel(&(gnl->line));
 	return (0);
 }

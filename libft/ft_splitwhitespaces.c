@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_splitwhitespace.c                               :+:      :+:    :+:   */
+/*   ft_splitwhitespaces.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayguillo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:30:04 by ayguillo          #+#    #+#             */
-/*   Updated: 2019/05/28 16:12:17 by ayguillo         ###   ########.fr       */
+/*   Updated: 2019/08/29 15:06:52 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char		**ft_splitwhitespaces(char const *s)
 	if (!(tab = (char**)malloc(sizeof(char*) * ft_count_w(s))))
 		return (NULL);
 	while (s[++n])
-		if ((s[n] < 9 || s[n] > 13) &&  s[n] != 32)
+		if ((s[n] < 9 || s[n] > 13) && s[n] != 32)
 		{
 			if (!(tab[i] = (char*)malloc(sizeof(char) * ft_words_l(&s[n]))))
 				return (NULL);

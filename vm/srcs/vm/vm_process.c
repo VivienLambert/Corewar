@@ -6,22 +6,22 @@
 /*   By: vlambert <vlambert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/21 09:01:50 by vlambert          #+#    #+#             */
-/*   Updated: 2019/08/09 16:44:07 by vlambert         ###   ########.fr       */
+/*   Updated: 2019/09/10 13:13:35 by vlambert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include "../libft/libft.h"
+#include "libft.h"
 
 void		init_process(t_vm *vm, unsigned int pc, t_proc *new)
 {
+	static int number = 0;
+
 	new->pc = pc % MEM_SIZE;
 	new->op_pc = new->pc;
 	new->waiting = -1;
-	if (vm->proc)
-		new->number = vm->proc->number + 1;
-	else
-		new->number = 1;
+	number += 1;
+	new->number = number;
 	vm->players[new->player].alive_proc += 1;
 }
 
@@ -31,7 +31,7 @@ int			add_process(t_vm *vm, int player, unsigned int pc, t_proc *src)
 
 	if (!(new = ft_memalloc(sizeof(t_proc))))
 	{
-		ft_putstr_fd("vm_process.c: add_process:", 2);
+		ft_putstr_fd("vm_process.c: l.32 add_process(): ", 2);
 		return (ERR_MALLOC);
 	}
 	if (src)
@@ -44,9 +44,6 @@ int			add_process(t_vm *vm, int player, unsigned int pc, t_proc *src)
 	init_process(vm, pc, new);
 	new->next = vm->proc;
 	vm->proc = new;
-	if (vm->options & OPTD)
-		ft_dprintf(2, "New process %d from %d carry %d pc %d\n",
-			new->number, src ? src->number : 0, new->carry, pc);
 	return (0);
 }
 

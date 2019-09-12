@@ -7,7 +7,8 @@ import (
 )
 
 func handleKeys(chDur chan time.Duration, dur *time.Duration, stop *bool) bool {
-	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+	event := sdl.PollEvent()
+	if event != nil {
 		switch test := event.(type) {
 		case *sdl.QuitEvent:
 			println("Quit")
@@ -28,16 +29,14 @@ func handleKeys(chDur chan time.Duration, dur *time.Duration, stop *bool) bool {
 				}
 				*stop = false
 			} else if test.State == sdl.PRESSED && test.Keysym.Sym == sdl.K_MINUS {
-				if (*dur).Seconds() < 0.5 {
+				if (*dur).Seconds() < 1 {
 					*dur *= 2
-					chDur <- *dur
-				} else {
-					*dur = time.Second
-					if *stop == true {
+					if *stop == false {
 						chDur <- *dur
 					}
+				} else {
+					*dur = time.Second
 				}
-				*stop = false
 			} else if test.State == sdl.PRESSED && test.Keysym.Sym == sdl.K_SPACE {
 				if *stop == false {
 					*stop = true

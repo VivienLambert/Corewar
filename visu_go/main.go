@@ -67,10 +67,10 @@ func main() {
 	}
 	defer surface.Free()
 
-	chMem := make(chan string, 1)
-	chInfos := make(chan string, 1)
+	chMem := make(chan string, 20000)
+	chInfos := make(chan string, 20000)
 	chDur := make(chan time.Duration, 1)
-	chTick := make(chan bool, 1)
+	chTick := make(chan bool, 100)
 
 	color[0] = sdl.Color{R: 255, G: 255, B: 255, A: 255}
 	color[1] = sdl.Color{R: 255, G: 0, B: 0, A: 255}
